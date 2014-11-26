@@ -120,21 +120,24 @@
                 records: data
               }
             });
-            $("tbody tr").click(function(){
+            $('#inventory').on('dynatable:afterUpdate', function(){
+              $("tbody tr").click(function(){
 
-              var tds = $(this).find("td")
-              var category = $(tds[0]).text()
-              var partNumber =$(tds[1]).text()
-              var partInfo =$(tds[2]).text()
+                var tds = $(this).find("td")
+                var category = $(tds[0]).text()
+                var partNumber =$(tds[1]).text()
+                var partInfo =$(tds[2]).text()
 
-              var subject = "Interested in part: "+partNumber;
-              var body = "Hello Larry, I am interested in this part, could I get additional information?";
+                var subject = "Interested in part: "+partNumber;
+                var body = "Hello Larry, I am interested in this part, could I get additional information?";
 
-              var mailto = "mailto:lpierson@laron.com?subject="+
-                subject+
-                "&body="+
-                body;
-              document.location.href = mailto;
+                var mailto = "mailto:lpierson@laron.com?subject="+
+                  subject+
+                  "&body="+
+                  body;
+                document.location.href = mailto;
+              });
+
             });
           }
         });
