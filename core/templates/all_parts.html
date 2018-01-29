@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="container">
+    <header>
+      <h1 class="header">LARMECH</h1>
+      <h4 class="text-center">
+        LARMECH your source for Electrical, Mechanical components and equipment for the Electrical and Mining industries.
+        Let us work for your electrical and mechanical sourcing needs.
+      </h4>
+    </header>
+    <table id="inventory" class="table table-striped table-hover">
+      <thead>
+        <tr>
+          <th>Item group</th>
+          <th>Item number</th>
+          <th>Item name</th>
+          <th>Quantity</th>
+          <th>Contact for Pricing</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in parts %}
+        <tr>
+          <td>{{row.part_type}}</td>
+          <td>{{row.part_number}}</td>
+          <td>{{row.description}}</td>
+          <td>{{row.quantity}}</td>
+
+          <td><a href="mailto:larry.pierson@outlook.com?subject=Interested in part: {{row.part_number}}&body=Hello Larry, I am interested in this part."><button class="btn btn-default">Contact</button></a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script type="text/javascript">
+    $('#inventory').dynatable({
+      features: {
+        paginate: false,
+        sort: true,
+        pushState: false,
+        search: true,
+        recordCount: false,
+        perPageSelect: false
+      }
+    });
+  </script>
+{% endblock %}
+
+
+
+
+
+      $(document).ready(function(){
+        Tabletop.init({ 
+          key: 'https://docs.google.com/spreadsheets/d/1HZoOkf4KlvomJC_wyoCb7LmCyhf9d2E8oLxN7FRM_SE/pubhtml',
+          callback: function(data, tabletop) { 
+            // convert to single array
+            data = _.flatten(_.map(_.keys(data), function(key){
+              return data[key].elements;
+              }));
+            _.map(data, function(row){
+              row.quantity = (+row.quantity).toFixed(0);
+
+              });
+            $('#inventory').dynatable({
+              features: {
+                paginate: false,
+                sort: true,
+                pushState: false,
+                search: true,
+                recordCount: false,
+                perPageSelect: false
+              },
+              dataset: {
+                records: data
+              }
+            });
+            $('#inventory').on('dynatable:afterUpdate', function(){
+              $("tbody tr").click(function(){
+
+                var tds = $(this).find("td")
+                var category = $(tds[0]).text()
+                var partNumber =$(tds[1]).text()
+                var partInfo =$(tds[2]).text()
+
+                var subject = "Interested in part: "+partNumber;
+                var body = "Hello Larry, I am interested in this part, could I get additional information?";
+
+                var mailto = "mailto:larry.pierson@outlook.com?subject="+
+                  subject+
+                  "&body="+
+                  body;
+                document.location.href = mailto;
+              });
+
+            });
+          }
+        });
+      });
+
